@@ -1,8 +1,8 @@
-var http = require("http");
+require('datejs');
+
 var facebook = require('./facebook');
-var local = require('./local');
-var date = require('./date');
-var tumblr = require('./tumblr');
+var local    = require('./local');
+var tumblr   = require('./tumblr');
 
 var filter = function(data) {
   local.getPosts(function(posts) {
@@ -16,15 +16,21 @@ var filter = function(data) {
             switch(current.status_type) {
               case 'mobile_status_update':
               case 'wall_post':
-                tumblr.postQuote(current.id, current.message, date);
+                tumblr.postQuote(current.id, current.message, date).then(function(error, data) {
+                  local.logResult(current.id, error, data);
+                });
             };
             break;
           case 'photo':
-            tumblr.postPhoto(current.id, current.picture, current.link, date); break;
+            tumblr.postPhoto(current.id, current.picture, current.link, date).then(function(error, data) {
+              local.logResult(current.id, error, data);
+            }); break;
           case 'link':
             switch(current.status_type) {
               case 'shared_story':
-                tumblr.postLink(current.id, current.link, current.message, date);
+                tumblr.postLink(current.id, current.link, current.message, date).then(function(error, data) {
+                  local.logResult(current.id, error, data);
+                });
             };
             break;
         }

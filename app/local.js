@@ -1,6 +1,5 @@
 var fs = require('fs');
 var config = require('./config').local;
-var _this = this;
 
 exports.getPosts = function(callback) {
   console.log('Retrieving stored posts...');

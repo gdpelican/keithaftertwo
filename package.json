@@ -1,7 +1,12 @@
 {
-  "name": "keithaftertwo"
-, "version": "0.0.1"
-, "dependencies": {
-    "express": "latest"
+  "name": "keithaftertwo",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "~4.10.7",
+    "tumblr.js": "0.0.4",
+    "datejs": "~1.0.0-rc3"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5"
   }
 }
