@@ -1,4 +1,4 @@
-var config = require('./config').tumblr; 
+var config = require('./config').tumblr;
 var lib = require('tumblr.js');
 var http = require('http');
 var local = require('./local');
