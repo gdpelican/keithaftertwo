@@ -1,10 +1,9 @@
 require('datejs');
-
 var facebook = require('./facebook');
 var local    = require('./local');
 var tumblr   = require('./tumblr');
 
-var filter = function(data) {
+facebook.read(function(data) {
   local.getPosts(function(posts) {
     for (var i = 0; i < data.length; i++) {
       var current = data[i];
@@ -37,6 +36,4 @@ var filter = function(data) {
       }
     }
   });
-};
-
-facebook.read(filter);
+});

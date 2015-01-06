@@ -1,5 +1,5 @@
 var https = require('https');
-var config = require('./config').facebook;
+var config = require('../config/config').facebook;
 
 exports.read = function(callback) {
   console.log('Reading from facebook...');
