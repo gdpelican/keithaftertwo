@@ -6,7 +6,8 @@ module.exports = function(grunt) {
       scss:   'src/**/*.scss',
       coffee: 'src/**/*.coffee',
       css:    'src/tmp/**/*.css',
-      js:     'src/tmp/**/*.js'
+      js:     'src/tmp/**/*.js',
+      minjs:  'start/**/*.js'
     },
 
     coffee: {
@@ -28,14 +29,13 @@ module.exports = function(grunt) {
           cwd: 'src/tmp/',
           src: '**/*.js',
           dest: 'start/',
-          ext: '.min.js'
+          ext: '.js'
         }]
       }
     },
 
     sass: {
       compile: {
-        options: { style: 'compressed' },
         files: [{
           expand: true,
           cwd:    'src',
@@ -53,7 +53,31 @@ module.exports = function(grunt) {
       }
     },
 
+    express: {
+      dev: {
+        options: {
+          script: 'start/app.js'
+        }
+      },
+      prod: {
+        options: {
+          script: 'start/app.js',
+          node_env: 'production'
+        }
+      },
+      test: {
+        options: {
+          script: 'start/app.js'
+        }
+      }
+    },
+
     watch: {
+      express: {
+        files: ['<%= filesets.minjs %>'],
+        tasks: ['express:dev'],
+        options: { spawn: false, reload: true }
+      },
       scss: {
         files: ['<%= filesets.scss %>'],
         tasks: ['sass', 'concat'],
@@ -64,7 +88,7 @@ module.exports = function(grunt) {
         tasks: ['coffee', 'uglify'],
         options: { spawn: false, reload: true }
       }
-    },
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -72,6 +96,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.registerTask('default', ['coffee', 'uglify', 'sass', 'concat', 'watch']);
+  grunt.loadNpmTasks('grunt-express-server');
+
+  grunt.registerTask('default', ['coffee', 'uglify', 'sass', 'concat', 'express:dev', 'watch' ]);
 
 };

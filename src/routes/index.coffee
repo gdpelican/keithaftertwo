@@ -1,7 +1,7 @@
 express  = require 'express'
-router   = express.Router();
-facebook = require '../services/facebook'
+router   = express.Router()
 tumblr   = require '../services/tumblr'
+facebook = require '../services/facebook'
 db       = require '../db/db'
 
 router.get '/', (req, res) ->
