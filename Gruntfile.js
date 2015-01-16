@@ -3,33 +3,33 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     filesets: {
-      client: {
-        scss:    'src/client/css/**/*.scss',
-        css:     'src/tmp/*.css',
-        coffee:  'src/client/**/*.coffee',
-        js:      'src/tmp/client.js'
-      },
-      server: {
-        coffee:  'src/server/**/*.coffee',
-        js:      'src/tmp/server.js'
-      }
+      scss:   'src/**/*.scss',
+      coffee: 'src/**/*.coffee',
+      css:    'src/tmp/**/*.css',
+      js:     'src/tmp/**/*.js'
     },
 
     coffee: {
-      options: { join: true },
       compile: {
-        files: {
-          'src/tmp/server.js': '<%= filesets.server.coffee %>',
-          'src/tmp/client.js': '<%= filesets.client.coffee %>'
-        }
+        files: [{
+          expand: true,
+          cwd: 'src',
+          src: '**/*.coffee',
+          dest: 'src/tmp/',
+          ext: '.js'
+        }]
       }
     },
 
     uglify: {
       js: {
-        files: {
-          'start/app.js': ['<%= filesets.server.js %>']
-        }
+        files: [{
+          expand: true,
+          cwd: 'src/tmp/',
+          src: '**/*.js',
+          dest: 'start/',
+          ext: '.min.js'
+        }]
       }
     },
 
@@ -37,26 +37,30 @@ module.exports = function(grunt) {
       compile: {
         options: { style: 'compressed' },
         files: [{
-          'src/tmp/style.css': 'src/client/css/style.scss'
+          expand: true,
+          cwd:    'src',
+          src:    '**.*.scss',
+          dest:   'src/tmp',
+          ext:    '.css'
         }]
       }
     },
 
     concat: {
       css: {
-        src: '<%= filesets.client.css %>',
+        src: 'src/tmp/**/*.css',
         dest: 'start/public/stylesheets/style.css'
       }
     },
 
     watch: {
       scss: {
-        files: ['<%= filesets.client.scss %>'],
+        files: ['<%= filesets.scss %>'],
         tasks: ['sass', 'concat'],
         options: { spawn: false, reload: true }
       },
       coffee: {
-        files: ['<%= filesets.server.coffee %>'],
+        files: ['<%= filesets.coffee %>'],
         tasks: ['coffee', 'uglify'],
         options: { spawn: false, reload: true }
       }
