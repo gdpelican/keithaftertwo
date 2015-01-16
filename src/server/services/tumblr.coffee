@@ -10,32 +10,35 @@ tumblr = require('tumblr.js').createClient
   token_secret:    config.tokenSecret
 
 
-exports.postAll = (posts) ->
+exports.postAll = (posts, callback) ->
   for post in posts
-    exports.post(post)
+    exports.post(post, callback)
 
-exports.post = (post) ->
+exports.post = (post, callback) ->
   date = Date.parse(post.created_time.substring(0,19)).addHours(-4)
 
   if !db.Post.findOne({id: post.id}) && date.getHours() >= 2 && date.getHours() < 6
     if post.type == 'status' && (post.status_type == 'mobile_status_update' || post.status_type == 'wall_post')
-      postQuote(post.id, post.message, date)
+      result = postQuote(post.id, post.message, date)
     if post.type == 'link' && post.status_type == 'shared_story'
-      postLink(post.id, post.link, post.message, date)
+      result = postLink(post.id, post.link, post.message, date)
     if post.type == 'photo'
-      postPhoto(post.id, post.picture, post.link, date)
+      result = postPhoto(post.id, post.picture, post.link, date)
+    else
+      error = 'Facebook post unsuitable for tumblr publish'
+  else
+    error = 'Facebook post has already been sent to tumblr'
+
+  callback(result, error)
 
 postQuote = (id, quote, date) ->
-  console.log "Attempting to post quote #{id} to tumblr... #{date.toString('d MMM yy, HH:mm')}"
   tumblr.quote config.blog, {quote: quote, date: date.toUTCString()}
-  new db.Post({id: id}).save
+  'Quote successfully sent to tumblr'
 
 postLink  = (id, url, description, date) ->
-  console.log "Attempting to post link #{id} to tumblr... #{date.toString('d MMM yy, HH:mm')}"
   tumblr.link config.blog, {url: url, description: description, date: date.toUTCString()}
-  new db.Post({id: id}).save
+  'Link successfully sent to tumblr'
 
 postPhoto = (id, source, link, date) ->
-  console.log('Attempting to post photo ' + id + ' to tumblr... ' + date.toString('d MMM yy, HH:mm'));
   tumblr.photo config.blog, {source: source, link: link, date: date.toUTCString()}
-  new db.Post({id: id}).save
+  'Photo successfully sent to tumblr'
