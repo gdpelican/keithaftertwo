@@ -16,7 +16,8 @@
     "datejs": "~1.0.0-rc3",
     "tumblr.js": "0.0.4",
     "grunt-express-server": "~0.4.19",
-    "mongoose": "~3.8.21"
+    "mongoose": "~3.8.21",
+    "request": "~2.51.0"
   },
   "devDependencies": {
     "grunt-contrib-coffee": "~0.12.0",
